@@ -72,9 +72,9 @@ def main():
     cudnn.deterministic = config.CUDNN.DETERMINISTIC
     cudnn.enabled = config.CUDNN.ENABLED
     gpus = list(config.GPUS)
-    if torch.cuda.device_count() != len(gpus):
-        print("The gpu numbers do not match!")
-        return 0
+    # if torch.cuda.device_count() != len(gpus):
+    #     print("The gpu numbers do not match!")
+    #     return 0
     
     imgnet = 'imagenet' in config.MODEL.PRETRAINED
     model = models.pidnet.get_seg_model(config, imgnet_pretrained=imgnet)
@@ -84,7 +84,7 @@ def main():
     crop_size = (config.TRAIN.IMAGE_SIZE[1], config.TRAIN.IMAGE_SIZE[0])
     train_dataset = eval('datasets.'+config.DATASET.DATASET)(
                         root=config.DATASET.ROOT,
-                        list_path=config.DATASET.TRAIN_SET,
+                        mode='train',
                         num_classes=config.DATASET.NUM_CLASSES,
                         multi_scale=config.TRAIN.MULTI_SCALE,
                         flip=config.TRAIN.FLIP,
@@ -105,7 +105,7 @@ def main():
     test_size = (config.TEST.IMAGE_SIZE[1], config.TEST.IMAGE_SIZE[0])
     test_dataset = eval('datasets.'+config.DATASET.DATASET)(
                         root=config.DATASET.ROOT,
-                        list_path=config.DATASET.TEST_SET,
+                        mode='val',
                         num_classes=config.DATASET.NUM_CLASSES,
                         multi_scale=False,
                         flip=False,
